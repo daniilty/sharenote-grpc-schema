@@ -1,0 +1,38 @@
+syntax = "proto3";
+
+package sharenote.schema;
+
+option go_package = "./;schema";
+
+service Users {
+  // GetUser - get user by id.
+  rpc GetUser(GetUserRequest) returns (GetUserResponse) {}
+  // GetUsers -  get users by id.
+  rpc GetUsers(GetUsersRequest) returns (GetUsersResponse) {}
+}
+
+message GetUserRequest {
+  string id = 1;
+}
+
+message GetUsersRequest {
+  repeated string ids = 1;
+}
+
+message GetUserResponse {
+  User user = 1;
+}
+
+message GetUsersResponse {
+  repeated User user = 1;
+}
+
+message User {
+  string id = 1;
+  string name = 2;
+  string user_name = 3;
+  string email = 4;
+  bool email_confirmed = 5;
+}
+
+

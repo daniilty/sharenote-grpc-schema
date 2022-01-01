@@ -1,0 +1,60 @@
+syntax = "proto3";
+
+package sharenote.schema;
+
+option go_package = "./;schema";
+
+service Notes {
+  // GetNote - get note by id.
+  rpc GetNote(GetNoteRequest) returns (GetNoteResponse) {}
+  // GetNotes - get notes by id.
+  rpc GetNotes(GetNotesRequest) returns (GetNotesResponse) {}
+  // DeleteNote - delete note by id.
+  rpc DeleteNote(DeleteNoteRequest) returns (DeleteNoteResponse) {}
+  // DeleteNotes - delete notes by id.
+  rpc DeleteNotes(DeleteNotesRequest) returns (DeleteNotesResponse) {}
+  // UpdateNote - update note by id.
+  rpc UpdateNote(UpdateNoteRequest) returns (UpdateNoteResponse) {}
+}
+
+message GetNoteRequest {
+  string id = 1;
+}
+
+message GetNotesRequest {
+  repeated string ids = 1;
+}
+
+message UpdateNoteRequest {
+  Note note = 1;
+}
+
+message DeleteNoteRequest {
+  string id = 1;
+}
+
+message DeleteNotesRequest {
+  repeated string ids = 1;
+}
+
+message GetNoteResponse {
+  Note note = 1;
+}
+
+message UpdateNoteResponse {}
+
+message GetNotesResponse {
+  repeated Note notes = 1;
+}
+
+message DeleteNoteResponse {}
+
+message DeleteNotesResponse {}
+
+message Note {
+  string id = 1;
+  string data = 2;
+  int64 timestamp = 3;
+  string name = 4;
+}
+
