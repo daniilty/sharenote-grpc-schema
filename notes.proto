@@ -5,6 +5,8 @@ package sharenote.schema;
 option go_package = "./;schema";
 
 service Notes {
+  // AddNote - add note to db.
+  rpc AddNote(AddNoteRequest) returns (AddNoteResponse) {}
   // GetNote - get note by id.
   rpc GetNote(GetNoteRequest) returns (GetNoteResponse) {}
   // GetNotes - get notes by id.
@@ -15,6 +17,10 @@ service Notes {
   rpc DeleteNotes(DeleteNotesRequest) returns (DeleteNotesResponse) {}
   // UpdateNote - update note by id.
   rpc UpdateNote(UpdateNoteRequest) returns (UpdateNoteResponse) {}
+}
+
+message AddNoteRequest {
+  Note note = 1;
 }
 
 message GetNoteRequest {
@@ -36,6 +42,8 @@ message DeleteNoteRequest {
 message DeleteNotesRequest {
   repeated string ids = 1;
 }
+
+message AddNoteResponse {}
 
 message GetNoteResponse {
   Note note = 1;

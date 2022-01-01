@@ -18,6 +18,8 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type NotesClient interface {
+	// AddNote - add note to db.
+	AddNote(ctx context.Context, in *AddNoteRequest, opts ...grpc.CallOption) (*AddNoteResponse, error)
 	// GetNote - get note by id.
 	GetNote(ctx context.Context, in *GetNoteRequest, opts ...grpc.CallOption) (*GetNoteResponse, error)
 	// GetNotes - get notes by id.
@@ -36,6 +38,15 @@ type notesClient struct {
 
 func NewNotesClient(cc grpc.ClientConnInterface) NotesClient {
 	return &notesClient{cc}
+}
+
+func (c *notesClient) AddNote(ctx context.Context, in *AddNoteRequest, opts ...grpc.CallOption) (*AddNoteResponse, error) {
+	out := new(AddNoteResponse)
+	err := c.cc.Invoke(ctx, "/sharenote.schema.Notes/AddNote", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
 }
 
 func (c *notesClient) GetNote(ctx context.Context, in *GetNoteRequest, opts ...grpc.CallOption) (*GetNoteResponse, error) {
@@ -87,6 +98,8 @@ func (c *notesClient) UpdateNote(ctx context.Context, in *UpdateNoteRequest, opt
 // All implementations must embed UnimplementedNotesServer
 // for forward compatibility
 type NotesServer interface {
+	// AddNote - add note to db.
+	AddNote(context.Context, *AddNoteRequest) (*AddNoteResponse, error)
 	// GetNote - get note by id.
 	GetNote(context.Context, *GetNoteRequest) (*GetNoteResponse, error)
 	// GetNotes - get notes by id.
@@ -104,6 +117,9 @@ type NotesServer interface {
 type UnimplementedNotesServer struct {
 }
 
+func (UnimplementedNotesServer) AddNote(context.Context, *AddNoteRequest) (*AddNoteResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AddNote not implemented")
+}
 func (UnimplementedNotesServer) GetNote(context.Context, *GetNoteRequest) (*GetNoteResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetNote not implemented")
 }
@@ -130,6 +146,24 @@ type UnsafeNotesServer interface {
 
 func RegisterNotesServer(s grpc.ServiceRegistrar, srv NotesServer) {
 	s.RegisterService(&Notes_ServiceDesc, srv)
+}
+
+func _Notes_AddNote_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AddNoteRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(NotesServer).AddNote(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/sharenote.schema.Notes/AddNote",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(NotesServer).AddNote(ctx, req.(*AddNoteRequest))
+	}
+	return interceptor(ctx, in, info, handler)
 }
 
 func _Notes_GetNote_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
@@ -229,6 +263,10 @@ var Notes_ServiceDesc = grpc.ServiceDesc{
 	ServiceName: "sharenote.schema.Notes",
 	HandlerType: (*NotesServer)(nil),
 	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "AddNote",
+			Handler:    _Notes_AddNote_Handler,
+		},
 		{
 			MethodName: "GetNote",
 			Handler:    _Notes_GetNote_Handler,
