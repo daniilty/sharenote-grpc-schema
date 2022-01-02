@@ -5,10 +5,19 @@ package sharenote.schema;
 option go_package = "./;schema";
 
 service Users {
+  // AddUser - add user after registration.
+  rpc AddUser(AddUserRequest) returns (AddUserResponse) {}
   // GetUser - get user by id.
   rpc GetUser(GetUserRequest) returns (GetUserResponse) {}
   // GetUsers -  get users by id.
   rpc GetUsers(GetUsersRequest) returns (GetUsersResponse) {}
+}
+
+message AddUserRequest {
+  string name = 1;
+  string user_name = 2;
+  string email = 3;
+  string password_hash = 4;
 }
 
 message GetUserRequest {
@@ -18,6 +27,8 @@ message GetUserRequest {
 message GetUsersRequest {
   repeated string ids = 1;
 }
+
+message AddUserResponse {}
 
 message GetUserResponse {
   User user = 1;
