@@ -9,7 +9,10 @@ service Users {
   rpc AddUser(AddUserRequest) returns (AddUserResponse) {}
   // GetUser - get user by id.
   rpc GetUser(GetUserRequest) returns (GetUserResponse) {}
+  // GetUserByEmail - get user by email
   rpc GetUserByEmail(GetUserByEmailRequest) returns (GetUserByEmailResponse) {}
+  // IsValidUserCredentials - check if user with given credentials exists.
+  rpc IsValidUserCredentials(IsValidUserCredentialsRequest) returns (IsValidUserCredentialsResponse) {}
   // GetUsers -  get users by id.
   rpc GetUsers(GetUsersRequest) returns (GetUsersResponse) {}
   // UpdateUser - update user by id.
@@ -31,6 +34,11 @@ message GetUserByEmailRequest {
   string email = 1;
 }
 
+message IsValidUserCredentialsRequest {
+  string email = 1;
+  string password_hash = 2;
+}
+
 message GetUsersRequest {
   repeated string ids = 1;
 }
@@ -44,6 +52,8 @@ message GetUserByEmailResponse {
 message GetUserResponse {
   User user = 1;
 }
+
+message IsValidUserCredentialsResponse {}
 
 message GetUsersResponse {
   repeated User users = 1;

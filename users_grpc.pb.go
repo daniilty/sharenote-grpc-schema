@@ -22,7 +22,10 @@ type UsersClient interface {
 	AddUser(ctx context.Context, in *AddUserRequest, opts ...grpc.CallOption) (*AddUserResponse, error)
 	// GetUser - get user by id.
 	GetUser(ctx context.Context, in *GetUserRequest, opts ...grpc.CallOption) (*GetUserResponse, error)
+	// GetUserByEmail - get user by email
 	GetUserByEmail(ctx context.Context, in *GetUserByEmailRequest, opts ...grpc.CallOption) (*GetUserByEmailResponse, error)
+	// IsValidUserCredentials - check if user with given credentials exists.
+	IsValidUserCredentials(ctx context.Context, in *IsValidUserCredentialsRequest, opts ...grpc.CallOption) (*IsValidUserCredentialsResponse, error)
 	// GetUsers -  get users by id.
 	GetUsers(ctx context.Context, in *GetUsersRequest, opts ...grpc.CallOption) (*GetUsersResponse, error)
 	// UpdateUser - update user by id.
@@ -64,6 +67,15 @@ func (c *usersClient) GetUserByEmail(ctx context.Context, in *GetUserByEmailRequ
 	return out, nil
 }
 
+func (c *usersClient) IsValidUserCredentials(ctx context.Context, in *IsValidUserCredentialsRequest, opts ...grpc.CallOption) (*IsValidUserCredentialsResponse, error) {
+	out := new(IsValidUserCredentialsResponse)
+	err := c.cc.Invoke(ctx, "/sharenote.schema.Users/IsValidUserCredentials", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *usersClient) GetUsers(ctx context.Context, in *GetUsersRequest, opts ...grpc.CallOption) (*GetUsersResponse, error) {
 	out := new(GetUsersResponse)
 	err := c.cc.Invoke(ctx, "/sharenote.schema.Users/GetUsers", in, out, opts...)
@@ -90,7 +102,10 @@ type UsersServer interface {
 	AddUser(context.Context, *AddUserRequest) (*AddUserResponse, error)
 	// GetUser - get user by id.
 	GetUser(context.Context, *GetUserRequest) (*GetUserResponse, error)
+	// GetUserByEmail - get user by email
 	GetUserByEmail(context.Context, *GetUserByEmailRequest) (*GetUserByEmailResponse, error)
+	// IsValidUserCredentials - check if user with given credentials exists.
+	IsValidUserCredentials(context.Context, *IsValidUserCredentialsRequest) (*IsValidUserCredentialsResponse, error)
 	// GetUsers -  get users by id.
 	GetUsers(context.Context, *GetUsersRequest) (*GetUsersResponse, error)
 	// UpdateUser - update user by id.
@@ -110,6 +125,9 @@ func (UnimplementedUsersServer) GetUser(context.Context, *GetUserRequest) (*GetU
 }
 func (UnimplementedUsersServer) GetUserByEmail(context.Context, *GetUserByEmailRequest) (*GetUserByEmailResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetUserByEmail not implemented")
+}
+func (UnimplementedUsersServer) IsValidUserCredentials(context.Context, *IsValidUserCredentialsRequest) (*IsValidUserCredentialsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method IsValidUserCredentials not implemented")
 }
 func (UnimplementedUsersServer) GetUsers(context.Context, *GetUsersRequest) (*GetUsersResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetUsers not implemented")
@@ -184,6 +202,24 @@ func _Users_GetUserByEmail_Handler(srv interface{}, ctx context.Context, dec fun
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Users_IsValidUserCredentials_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(IsValidUserCredentialsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UsersServer).IsValidUserCredentials(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/sharenote.schema.Users/IsValidUserCredentials",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UsersServer).IsValidUserCredentials(ctx, req.(*IsValidUserCredentialsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _Users_GetUsers_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(GetUsersRequest)
 	if err := dec(in); err != nil {
@@ -238,6 +274,10 @@ var Users_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetUserByEmail",
 			Handler:    _Users_GetUserByEmail_Handler,
+		},
+		{
+			MethodName: "IsValidUserCredentials",
+			Handler:    _Users_IsValidUserCredentials_Handler,
 		},
 		{
 			MethodName: "GetUsers",
