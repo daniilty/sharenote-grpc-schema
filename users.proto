@@ -9,6 +9,7 @@ service Users {
   rpc AddUser(AddUserRequest) returns (AddUserResponse) {}
   // GetUser - get user by id.
   rpc GetUser(GetUserRequest) returns (GetUserResponse) {}
+  rpc GetUserByEmail(GetUserByEmailRequest) returns (GetUserByEmailResponse) {}
   // GetUsers -  get users by id.
   rpc GetUsers(GetUsersRequest) returns (GetUsersResponse) {}
   // UpdateUser - update user by id.
@@ -26,11 +27,19 @@ message GetUserRequest {
   string id = 1;
 }
 
+message GetUserByEmailRequest {
+  string email = 1;
+}
+
 message GetUsersRequest {
   repeated string ids = 1;
 }
 
 message AddUserResponse {}
+
+message GetUserByEmailResponse {
+  User user = 1;
+}
 
 message GetUserResponse {
   User user = 1;
