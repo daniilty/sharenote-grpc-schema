@@ -43,7 +43,9 @@ message GetUsersRequest {
   repeated string ids = 1;
 }
 
-message AddUserResponse {}
+message AddUserResponse {
+  string id = 1;
+}
 
 message GetUserByEmailResponse {
   User user = 1;
